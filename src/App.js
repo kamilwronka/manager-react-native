@@ -3,10 +3,13 @@ import ReduxThunk from 'redux-thunk';
 import { Provider } from 'react-redux';
 import { createStore, applyMiddleware } from 'redux';
 import firebase from 'firebase';
+import { Root, Container } from "native-base";
 
+import Router from './Router';
 import reducers from './reducers';
 import LoginForm from './components/LoginForm';
 import { Header } from './components/common';
+import { StackNavigator } from 'react-navigation';
 
 class App extends Component {
     componentWillMount() {
@@ -24,9 +27,12 @@ class App extends Component {
         const store = createStore(reducers, {}, applyMiddleware(ReduxThunk));
         return (
             <Provider store={store} >
-                    <LoginForm />
+                <Root>
+                    <Router />
+                </Root>
             </Provider>
         );
     }
 }
+
 export default App;

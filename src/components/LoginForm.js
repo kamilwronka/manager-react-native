@@ -1,10 +1,19 @@
 import React, { Component } from 'react';
-import { View, Text } from 'react-native';
+import { View } from 'react-native';
 import { connect } from 'react-redux';
 import { emailChanged, passwordChanged, loginUser } from '../actions';
-import { Card, CardSection, Input, Button } from './common';
+import { Container, Spinner, Header, Toast, Body, Content, Title, Button, Text, Form, Input, Item, Label } from 'native-base';
 
 class LoginForm extends Component {
+    static navigationOptions = {
+        header: (
+            <Header>
+                <Body>
+                    <Title>Sign in</Title>
+                </Body>
+            </Header>
+        )
+      };
     onEmailChange(text) {
         this.props.emailChanged(text);
     }
@@ -16,46 +25,51 @@ class LoginForm extends Component {
 
         this.props.loginUser( {email, password});
     }
+    renderButton() {
+        if(this.props.loading) {
+            return <Spinner color="blue" />  
+        }
 
+        return (
+            <Button block full onPress={this.onButtonPress.bind(this)}>
+                <Text>Sign in</Text>
+            </Button>
+        );
+    }
     renderError() {
+        console.log(this.props.error);
         if(this.props.error) {
-            return(
-                <View style={{ backgroundColor: 'white'}}>
-                    <Text style={styles.errorTextStyle}>
-                        {this.props.error}
-                    </Text>
-                </View>
-            );
+            return (
+                <Content>
+                    <Text>Errur</Text>
+                </Content>
+        );
         }
     }
     render() {
         return (
-            <Card>
-                <CardSection>
+            <Content padder>
+                <Form>
+                    <Item stackedLabel>
+                    <Label>Email</Label>
                     <Input
-                        label="Email"
-                        placeholder="example@mail.com"
                         onChangeText={this.onEmailChange.bind(this)}
                         value={this.props.email}
                     />
-                </CardSection>
-                <CardSection>
+                    </Item>
+                    <Item stackedLabel>
+                    <Label>Password</Label>
                     <Input
                         secureTextEntry
-                        label="Password"
-                        placeholder="password"
                         onChangeText={this.onPasswordChange.bind(this)}
                     />
-                </CardSection>
-
+                    </Item>
+                    <Content padder>
+                        {this.renderButton()}
+                    </Content>
+                </Form>
                 {this.renderError()}
-
-                <CardSection>
-                    <Button onPress={this.onButtonPress.bind(this)}>
-                        Login
-                    </Button>
-                </CardSection>
-            </Card>
+            </Content>
         )
     }
 }
@@ -68,11 +82,13 @@ const styles = {
 }
 
 const mapStateToProps = ({ auth }) => {
-    const { password, email, error } = auth;
+    const { password, email, error, loading } = auth;
+    console.log(password);
     return {
         email,
         password,
-        error
+        error,
+        loading
     }
 };
 
