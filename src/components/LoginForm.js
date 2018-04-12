@@ -1,19 +1,10 @@
 import React, { Component } from 'react';
-import { View } from 'react-native';
 import { connect } from 'react-redux';
+import { Keyboard } from 'react-native';
 import { emailChanged, passwordChanged, loginUser } from '../actions';
-import { Container, Spinner, Header, Toast, Body, Content, Title, Button, Text, Form, Input, Item, Label } from 'native-base';
+import { Container, Spinner, Toast, Icon, Content, Title, Button, Text, Form, Input, Item, Label } from 'native-base';
 
 class LoginForm extends Component {
-    static navigationOptions = {
-        header: (
-            <Header>
-                <Body>
-                    <Title>Sign in</Title>
-                </Body>
-            </Header>
-        )
-      };
     onEmailChange(text) {
         this.props.emailChanged(text);
     }
@@ -22,37 +13,27 @@ class LoginForm extends Component {
     }
     onButtonPress() {
         const { email, password } = this.props;
-
-        this.props.loginUser( {email, password});
+        this.props.loginUser( {email, password} );
+        Keyboard.dismiss();
     }
     renderButton() {
         if(this.props.loading) {
-            return <Spinner color="blue" />  
+            return <Spinner color="blue" />;
         }
-
         return (
-            <Button block full onPress={this.onButtonPress.bind(this)}>
-                <Text>Sign in</Text>
-            </Button>
+                <Button block full onPress={this.onButtonPress.bind(this)}>
+                    <Text>Sign in</Text>
+                </Button>
         );
-    }
-    renderError() {
-        console.log(this.props.error);
-        if(this.props.error) {
-            return (
-                <Content>
-                    <Text>Errur</Text>
-                </Content>
-        );
-        }
     }
     render() {
-        return (
+         return (
             <Content padder>
                 <Form>
                     <Item stackedLabel>
                     <Label>Email</Label>
                     <Input
+                        autoCorrect={false}
                         onChangeText={this.onEmailChange.bind(this)}
                         value={this.props.email}
                     />
@@ -60,36 +41,32 @@ class LoginForm extends Component {
                     <Item stackedLabel>
                     <Label>Password</Label>
                     <Input
+                        value={this.props.password}
                         secureTextEntry
+                        autoCorrect={false}
                         onChangeText={this.onPasswordChange.bind(this)}
                     />
                     </Item>
                     <Content padder>
+                        {this.props.error? <Text style={{ color: 'red' }}>Could not log in. Please make sure you are passing good credentials.</Text>: null}
+                    </Content>
+                    <Content padder>
                         {this.renderButton()}
                     </Content>
                 </Form>
-                {this.renderError()}
             </Content>
-        )
-    }
-}
-const styles = {
-    errorTextStyle: {
-        fontSize: 20,
-        alignSelf: 'center',
-        color: 'red'
+        );
     }
 }
 
 const mapStateToProps = ({ auth }) => {
     const { password, email, error, loading } = auth;
-    console.log(password);
     return {
         email,
         password,
         error,
         loading
-    }
+    };
 };
 
 
