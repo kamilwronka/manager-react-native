@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Keyboard } from 'react-native';
 import { emailChanged, passwordChanged, loginUser } from '../actions';
-import { Container, Spinner, Toast, Icon, Content, Title, Button, Text, Form, Input, Item, Label } from 'native-base';
+import { Container, Spinner, Icon, Content, Title, Button, Text, Form, Input, Item, Label } from 'native-base';
 
 class LoginForm extends Component {
     onEmailChange(text) {

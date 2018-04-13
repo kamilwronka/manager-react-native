@@ -1,20 +1,37 @@
+import _ from 'lodash';
 import React, { Component } from 'react';
-import { View, Text } from 'react-native';
+import { connect } from 'react-redux';
+import { FlatList, View, Text } from 'react-native';
+import { employeeFetch } from '../actions';
+import { Container, Content } from 'native-base';
 
 class EmployeeList extends Component {
+    componentWillMount() {
+       this.props.employeeFetch();
+    }
+    renderRow(item) {
+        return (
+            <Text>{item.name}</Text>
+        );
+    }
     render() {
         return (
-            <View>
-                <Text>Pidar</Text>
-                <Text>Pidar</Text>
-                <Text>Pidar</Text>
-                <Text>Pidar</Text>
-                <Text>Pidar</Text>
-                <Text>Pidar</Text>
-                <Text>Pidar</Text>
-            </View>
+                <Content>
+                    <FlatList
+                        data={this.props.employee}
+                        renderItem={({ item }) => this.renderRow(item)}
+                        keyExtractor = {(item, index) => index.toString()}
+                        />
+                </Content>
         );
     }
 }
 
-export default EmployeeList;
+const mapStateToProps = (state) => {
+    const employee = _.map(state.employee, (val, uid) => {
+        return { ...val, uid };
+    });
+    return { employee };
+};
+
+export default connect(mapStateToProps, { employeeFetch })(EmployeeList);
